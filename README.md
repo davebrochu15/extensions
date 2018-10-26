@@ -20,3 +20,7 @@ Generate `.js` files in the `dist` folder
 Test a single file
 - `npm run test_all`
 Test all files
+
+### Global packages neeeded:
+- mocha
+- webpack
