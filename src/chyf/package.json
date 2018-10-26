@@ -1,0 +1,13 @@
+{
+    "name": "chyf-extensions",
+    "version": "0.1.0",
+    "description": "CHyF extensions for the RAMP",
+    "scripts": {},
+    "keywords": [
+        "extension",
+        "RAMP"
+    ],
+    "author": "Dave Brochu",
+    "license": "ISC",
+    "devDependencies": {}
+}

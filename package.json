@@ -1,0 +1,50 @@
+{
+    "name": "extensions",
+    "version": "0.1.0",
+    "description": "Sets the foundation for building/testing Geobase extensions in a consistent way.",
+    "scripts": {
+        "dev": "webpack --mode development",
+        "serve": "webpack-serve",
+        "test_all": "mocha -r ts-node/register -r tsconfig-paths/register \"./src/**/*spec.{ts,tsx}\"",
+        "test": "mocha -r ts-node/register -r tsconfig-paths/register -r jsdom-global/register"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/fgpv-vpgf/extensions.git"
+    },
+    "keywords": [
+        "extension",
+        "RAMP"
+    ],
+    "author": "Dave Brochu",
+    "license": "ISC",
+    "devDependencies": {
+        "@types/chai": "^4.1.6",
+        "@types/jquery": "3.3.5",
+        "@types/jsdom": "^12.2.0",
+        "@types/mocha": "^5.2.5",
+        "@types/node": "^10.12.0",
+        "chai": "^4.2.0",
+        "css-loader": "1.0.0",
+        "jquery": "^3.3.1",
+        "jsdom": "^12.2.0",
+        "jsdom-global": "^3.0.2",
+        "mini-css-extract-plugin": "0.4.1",
+        "mocha": "^5.2.0",
+        "node-sass": "4.9.3",
+        "sass-loader": "7.1.0",
+        "style-loader": "0.22.1",
+        "ts-loader": "4.4.2",
+        "ts-node": "^7.0.1",
+        "tsconfig-paths": "^3.6.0",
+        "tsconfig-paths-webpack-plugin": "^3.2.0",
+        "typescript": "3.0.1",
+        "webpack": "4.16.5",
+        "webpack-cli": "3.1.0",
+        "webpack-serve": "2.0.2"
+    },
+    "dependencies": {
+        "@types/axios": "^0.14.0",
+        "axios": "^0.18.0"
+    }
+}
