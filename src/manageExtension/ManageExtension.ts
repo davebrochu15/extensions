@@ -2,6 +2,7 @@ import { Extension } from "./Extension";
 import { MapClickEvent } from "api/events";
 import Map from "api/map";
 import { SimpleLayer } from "api/layers";
+import * as $ from "jquery";
 
 export class ManageExtension {
 
@@ -43,9 +44,9 @@ export class ManageExtension {
      */
     private createHTMLBaseComponent(): void {
 
-        if ( $('ul.rv-legend-level-0').length ) {
+        if ( $("ul.rv-legend-level-0").length ) {
             // Create the HTML base for the extensions
-            $('ul.rv-legend-level-0').after(
+            $("ul.rv-legend-level-0").after(
                 `<div class="ng-isolate-scope border-top">
                     <div class="main-appbar rv-whiteframe-z2">
                         <h2 class="md-headline title-extensions ng-scope">Extensions</h2>
@@ -124,8 +125,8 @@ export class ManageExtension {
      */
     private manageClickEventMap(): void {
         this._map.click.subscribe( async (mapClickEvent: MapClickEvent) => {
-            if( this._selectedExtension ) {
 
+            if( this._selectedExtension ) {
                 // Extension-specific actions
                 await this._selectedExtension.actionMap(this._map, mapClickEvent);
 

@@ -1,9 +1,8 @@
 import { Map } from "api/map";
 import { Extension, RenderStyle } from "../manageExtension/Extension";
 import { XY, BaseGeometry, Polygon, MultiPolygon } from "api/geometry";
-import { AxiosResponse,  } from "axios";
+import Axios, { AxiosResponse } from "axios";
 import { MapClickEvent } from "api/events";
-const axios = require('axios');
 
 /**
  * Hydraulic's extensions
@@ -14,26 +13,35 @@ export class CHyFExtension extends Extension {
         super(name, url);
     }
 
-    protected async getJSON(point: XY): Promise<Object> {
-        const response: AxiosResponse = await axios.get(`${this._url}?point=${point.x},${point.y}&removeHoles=false`)
-        return response.data;
+    public async getJSON(point: XY): Promise<Object> {
+        try {
+            const response: AxiosResponse = await Axios.get(`${this._url}?point=${point.x},${point.y}&removeHoles=false`)
+            return response.data;
+        } catch (error) {
+            throw new Error("File not found");
+        }
     }
 
-    protected parse(json: ResponseJSON): BaseGeometry {
-        let points: XY[] = [];
+    public parse(json: ResponseChyfJSON): BaseGeometry {
+        let points:XY[] = [];
         let polygons: Polygon[] = [];
 
-        switch (json.geometry.type) {
-            case "Polygon":
-                points.push(json.geometry.coordinates[0]);
-                return new Polygon(1000, points, this.renderStyleGeometries);
-            case "MultiPolygon":
-                json.geometry.coordinates.forEach ( (coordinates: any[], index: number) => {
-                    points.push(coordinates[0]);
-                    polygons.push(new Polygon(1000+index, points, this.renderStyleGeometries));
-                    points = [];
-                }); 
-                return new MultiPolygon(100000, polygons, this.renderStyleGeometries);
+        try 
+        {
+            switch (json.geometry.type) {
+                case "Polygon":
+                    points.push(json.geometry.coordinates[0]);
+                    return new Polygon(1000, points, this.renderStyleGeometries);
+                case "MultiPolygon":
+                    json.geometry.coordinates.forEach ( (coordinates: any[], index: number) => {
+                        points.push(coordinates[0]);
+                        polygons.push(new Polygon(1000+index, points, this.renderStyleGeometries));
+                        points = [];
+                    }); 
+                    return new MultiPolygon(100000, polygons, this.renderStyleGeometries);
+            }
+        } catch (error) {
+            throw new Error(`Cannot parse the data : ${error.message}`);
         }
     }
 
@@ -50,8 +58,9 @@ export class CHyFExtension extends Extension {
     }
 
     public async actionMap(map: Map, mapClickEvent: MapClickEvent): Promise<void> {
+
         const geometries: BaseGeometry = await this.fetch(mapClickEvent.xy);
-        this.setGeometries(geometries);
+        this.geometries = [geometries];
 
         // Trigger the layer click event for display the enhancedTable
         // The enhancedTable rz-extension must be include
@@ -59,7 +68,7 @@ export class CHyFExtension extends Extension {
     }
 }
 
-export interface ResponseJSON {
+export interface ResponseChyfJSON {
     ID: number,
     geometry: {
         type: string,
@@ -68,8 +77,8 @@ export interface ResponseJSON {
     properties: {
         area?: number
     },
-    responseMetadata: {
+    responseMetadata?: {
         executionTime: number
     },
-    type: string
+    type?: string
 }

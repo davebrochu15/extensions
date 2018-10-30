@@ -46,7 +46,7 @@ export abstract class Extension {
      * Get the extension's geometries
      * @return the extension's geometries
      */
-    get geometries(): any[] {
+    get geometries(): BaseGeometry[] {
         return this._layer.geometry;
     }
 
@@ -63,17 +63,21 @@ export abstract class Extension {
      * @return geometries The extension's geometries
      */
     public async fetch(point?: XY): Promise<BaseGeometry> {
-        const json: any = await this.getJSON(point);
-        this.setAttributes([json.properties]);
-        const geometries: BaseGeometry = this.parse(json);
-        return geometries;
+        try {
+            const json: any = await this.getJSON(point);
+            this.attributes = [json.properties];
+            const geometries: BaseGeometry = this.parse(json);
+            return geometries;
+        } catch (err) {
+            throw new Error(err.message);
+        }
     }
 
     /**
      * Set the extension layer's geometries 
      * @param geometries - The geometries to add
      */
-    public setGeometries(geometries: BaseGeometry): void {
+    set geometries(geometries: BaseGeometry[]) {
 
         // If the layer has geometries, remove them
         if(this._layer.geometry && this._layer.geometry.length !== 0) {
@@ -87,7 +91,7 @@ export abstract class Extension {
      * Set the extension layer's attributes
      * @param attrs - The attributes to add
      */
-    public setAttributes(attrs: any[]): void {
+    set attributes(attrs: any[]) {
         if(!this._layer) {
             throw new Error("The extension's layer is null");
         }
@@ -106,14 +110,14 @@ export abstract class Extension {
      * @param point - The selected point
      * @return The JSON data
      */
-    protected abstract async getJSON(point?: XY): Promise<Object>;
+    public abstract async getJSON(point?: XY): Promise<Object>;
 
     /**
      * Parse the json to create geometries
      * @param json - The json data
      * @return The geometries created 
      */
-    protected abstract parse(json: any): BaseGeometry;
+    public abstract parse(json: any): BaseGeometry;
 
     /**
      * Call needed action from click event
