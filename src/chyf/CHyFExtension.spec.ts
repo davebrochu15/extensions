@@ -7,6 +7,7 @@ import { Extension } from "../manageExtension/Extension";
 
 describe("Extension class tests", () => {
 
+    const URL = "http://dev.geogratis.gc.ca:8012/chyf/";
     let _extension: Extension;
     let _layer: SimpleLayer;
 
@@ -30,7 +31,7 @@ describe("Extension class tests", () => {
             }
         }
 
-        _extension = new CHyFExtension("extension","http://dev.geogratis.gc.ca:8012/chyf/drainageArea/upstreamOf.json");
+        _extension = new CHyFExtension("extension",`${URL}/drainageArea/upstreamOf.json`);
         _extension.layer = _layer;
     })
     
@@ -44,7 +45,7 @@ describe("Extension class tests", () => {
         });
 
         it("should throw a error if the address is wrong", async () => {
-            const extension = new CHyFExtension("extension","http://dev.geeeogratis.gc.ca:8012/chyf/drainageArea/upstreamOf.json");
+            const extension = new CHyFExtension("extension",`${URL}/drainageArea/upstreamOf.json`);
             extension.layer = _layer;
             const point: XY = new XY(-73.2480812072754,45.82245932513635);
             expect( async () => await extension.getJSON(point)).to.throw;

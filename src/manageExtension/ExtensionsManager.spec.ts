@@ -8,8 +8,10 @@ import * as $ from "jquery";
 import { CHyFExtension } from "../chyf/CHyFExtension";
 import { BaseLayer, LayerGroup } from "api/layers";
 
-describe("ManageExtension class tests", () => {
+// @ts-ignore
+global.$ = $;
 
+describe("ManageExtension class tests", () => {
 
     let _map: Map;
 
@@ -64,12 +66,12 @@ describe("ManageExtension class tests", () => {
         });
 
         it("should return a new instance of the class", () => {
-            const manageExtension: ExtensionsManager = ExtensionsManager.getInstance(_map);
+            const manageExtension: ExtensionsManager = new ExtensionsManager(_map, "Test");
             expect(manageExtension).to.not.be.null;
         });
     
         it("should create the base HTML component", () => {
-            ExtensionsManager.getInstance(_map);
+            new ExtensionsManager(_map, "Test");
             expect($(".title-extensions").text()).to.not.be.empty;
         })
 
@@ -83,7 +85,7 @@ describe("ManageExtension class tests", () => {
             $("body").after(
                 `<ul class="rv-legend-list rv-legend-root rv-legend-level-0 ng-scope"></ul>`
             )
-            manageExtension = ExtensionsManager.getInstance(_map);
+            manageExtension = new ExtensionsManager(_map, "Test");
         });
 
         it("should add the extension HTML component", () => {
