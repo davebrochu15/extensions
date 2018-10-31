@@ -9,7 +9,7 @@ import Map from "api/map";
  */
 (<any>window).myExtension = {
     init: function(api: Map) {
-        const manageExtension: ManageExtension = ManageExtension.getInstance(api);
+        const manageExtension: ManageExtension = new ManageExtension(api, "CHyF");
         const upstream: Extension = new CHyFExtension("upstream",`http://dev.geogratis.gc.ca:8012/chyf/drainageArea/upstreamOf.json`);
         const downstream: Extension = new CHyFExtension("downstream",`http://dev.geogratis.gc.ca:8012/chyf/drainageArea/downstreamOf.json`);
 

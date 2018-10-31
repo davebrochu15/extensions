@@ -6,29 +6,18 @@ import * as $ from "jquery";
 
 export class ManageExtension {
 
-    private static _instance: ManageExtension;
     private _map: Map;
+    private _name: String;
     private _extensions: Extension[];
     private _selectedExtension: Extension;
+    private _extensionsBaseElement: JQuery<HTMLElement>;
 
-    private constructor(api: Map) {
+    public constructor(api: Map, name: string) {
         this._map = api;
+        this._name = name;
         this._extensions = [];
         this._selectedExtension = null;
         this.init(); 
-    }
-
-    /**
-     * Get the instance of the class ManageExtension
-     * @param api - The map instance
-     * @return The class ManageExtension
-     */
-    public static getInstance(api: Map) {
-        if(!this._instance) {
-            //create a new instance
-            this._instance = new this(api);
-        } 
-        return this._instance;
     }
 
     /**
@@ -49,7 +38,7 @@ export class ManageExtension {
             $("ul.rv-legend-level-0").after(
                 `<div class="ng-isolate-scope border-top">
                     <div class="main-appbar rv-whiteframe-z2">
-                        <h2 class="md-headline title-extensions ng-scope">Extensions</h2>
+                        <h2 class="md-headline title-extensions ng-scope">${this._name}</h2>
                     </div>
                 </div>
                 
@@ -57,6 +46,8 @@ export class ManageExtension {
                 </ul>
                 `
             );
+
+            this._extensionsBaseElement = $("ul.panel-extensions").first();
         }
     }
 
@@ -86,7 +77,7 @@ export class ManageExtension {
      * @param name - The extension's name
      */
     private addHTMLButton(name: string) {
-        $("ul.panel-extensions").append(`
+        $("ul.panel-extensions").first().append(`
             <li>
                 <button id="${name}" >${name.charAt(0).toUpperCase() + name.slice(1)}</button>
             </li>
@@ -115,7 +106,11 @@ export class ManageExtension {
      * Remove selected state and style for every buttons
      */
     private deselectAll(): void {
-        $("ul.panel-extensions > li > button").removeAttr("style");
+        const liArray: Element[] = Array.from(this._extensionsBaseElement[0].children); 
+        liArray.forEach( (li) =>  {
+            li.children[0].removeAttribute("style");
+        });
+
         this._map.mapI.setMapCursor("default");
         this._selectedExtension = null;
     }
