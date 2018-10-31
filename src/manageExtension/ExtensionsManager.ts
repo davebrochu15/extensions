@@ -3,7 +3,7 @@ import { MapClickEvent } from "api/events";
 import Map from "api/map";
 import { SimpleLayer } from "api/layers";
 
-export class ManageExtension {
+export class ExtensionsManager {
 
     private _map: Map;
     private _name: String;

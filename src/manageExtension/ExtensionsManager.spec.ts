@@ -1,6 +1,6 @@
 import "jsdom-global/register";
 import Map from "api/map";
-import { ManageExtension } from "./ManageExtension";
+import { ExtensionsManager } from "./ExtensionsManager";
 import { Observable } from "rxjs";
 import { XY, BaseGeometry } from "api/geometry";
 import { expect } from "chai";
@@ -64,12 +64,12 @@ describe("ManageExtension class tests", () => {
         });
 
         it("should return a new instance of the class", () => {
-            const manageExtension: ManageExtension = ManageExtension.getInstance(_map);
+            const manageExtension: ExtensionsManager = ExtensionsManager.getInstance(_map);
             expect(manageExtension).to.not.be.null;
         });
     
         it("should create the base HTML component", () => {
-            ManageExtension.getInstance(_map);
+            ExtensionsManager.getInstance(_map);
             expect($(".title-extensions").text()).to.not.be.empty;
         })
 
@@ -77,13 +77,13 @@ describe("ManageExtension class tests", () => {
 
     describe("addExtensions", () => {
 
-        let manageExtension: ManageExtension;
+        let manageExtension: ExtensionsManager;
 
         before( () => {
             $("body").after(
                 `<ul class="rv-legend-list rv-legend-root rv-legend-level-0 ng-scope"></ul>`
             )
-            manageExtension = ManageExtension.getInstance(_map);
+            manageExtension = ExtensionsManager.getInstance(_map);
         });
 
         it("should add the extension HTML component", () => {

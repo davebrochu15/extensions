@@ -1,6 +1,6 @@
 import { Extension } from "../manageExtension/Extension";
 import { CHyFExtension } from "./CHyFExtension";
-import { ManageExtension } from "../manageExtension/ManageExtension";
+import { ExtensionsManager } from "../manageExtension/ExtensionsManager";
 import Map from "api/map";
 
 /**
@@ -9,7 +9,7 @@ import Map from "api/map";
  */
 (<any>window).myExtension = {
     init: function(api: Map) {
-        const manageExtension: ManageExtension = new ManageExtension(api, "CHyF");
+        const manageExtension: ExtensionsManager = new ExtensionsManager(api, "CHyF");
         const upstream: Extension = new CHyFExtension("upstream",`http://dev.geogratis.gc.ca:8012/chyf/drainageArea/upstreamOf.json`);
         const downstream: Extension = new CHyFExtension("downstream",`http://dev.geogratis.gc.ca:8012/chyf/drainageArea/downstreamOf.json`);
 
