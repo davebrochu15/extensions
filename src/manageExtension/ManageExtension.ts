@@ -2,7 +2,6 @@ import { Extension } from "./Extension";
 import { MapClickEvent } from "api/events";
 import Map from "api/map";
 import { SimpleLayer } from "api/layers";
-import * as $ from "jquery";
 
 export class ManageExtension {
 

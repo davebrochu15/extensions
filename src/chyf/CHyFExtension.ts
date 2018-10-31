@@ -4,6 +4,9 @@ import { XY, BaseGeometry, Polygon, MultiPolygon } from "api/geometry";
 import Axios, { AxiosResponse } from "axios";
 import { MapClickEvent } from "api/events";
 
+// Use window global variable from the FGPV-VPGF
+declare const RZ: any;
+
 /**
  * Hydraulic's extensions
  */
@@ -31,14 +34,14 @@ export class CHyFExtension extends Extension {
             switch (json.geometry.type) {
                 case "Polygon":
                     points.push(json.geometry.coordinates[0]);
-                    return new Polygon(1000, points, this.renderStyleGeometries);
+                    return new RZ.GEO.Polygon(1000, points, this.renderStyleGeometries);
                 case "MultiPolygon":
                     json.geometry.coordinates.forEach ( (coordinates: any[], index: number) => {
                         points.push(coordinates[0]);
-                        polygons.push(new Polygon(1000+index, points, this.renderStyleGeometries));
+                        polygons.push(new RZ.GEO.Polygon(1000+index, points, this.renderStyleGeometries));
                         points = [];
                     }); 
-                    return new MultiPolygon(100000, polygons, this.renderStyleGeometries);
+                    return new RZ.GEO.MultiPolygon(100000, polygons, this.renderStyleGeometries);
             }
         } catch (error) {
             throw new Error(`Cannot parse the data : ${error.message}`);
