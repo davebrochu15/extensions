@@ -11,19 +11,6 @@
     height: 10px;
 }
 
-.panel-extensions li {
-    list-style: none;
-}
-
-.list-extensions {
-    margin-left: -40px;
-    padding: 3px 0 0 60px;
-    font-size: 1.2em;
-    width: 400px;
-    height: 50px;
-    line-height: 3em;
-}
-
 .panel-extensions li button {
     border: none;
     background-color: white;

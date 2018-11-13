@@ -89,12 +89,12 @@ describe("ManageExtension class tests", () => {
         });
 
         it("should add the extension HTML component", () => {
-            manageExtension.addExtensions([new CHyFExtension(null,"name","url")]);
+            manageExtension.addExtensions([new CHyFExtension("name","url")]);
             expect($(".panel-extensions > li > button")[0].id).to.equal("name");
         });
 
         it("should add a new layer extension", () => {
-            manageExtension.addExtensions([new CHyFExtension(null,"name","url")]);
+            manageExtension.addExtensions([new CHyFExtension("name","url")]);
             expect(_map.layers._layersArray).to.not.be.empty;
         });
 
