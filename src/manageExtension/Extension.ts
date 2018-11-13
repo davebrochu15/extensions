@@ -1,21 +1,34 @@
-import Map from "api/map";
-import { XY, BaseGeometry } from "api/geometry";
+import { Map } from "api/map";
+import { BaseGeometry } from "api/geometry";
 import { SimpleLayer } from "api/layers";
 import { MapClickEvent } from "api/events";
+import { Panel } from "api/panel";
+import { Feature } from "./Feature";
 
 /**
  * All extensions must derive from this class. Not intented to be instantiated on its own.
  */
 export abstract class Extension {
 
+    protected _map: Map;
     protected _url: string;
-    protected _name: string;
     protected _layer: SimpleLayer;
+    protected _panels: Panel[];
+    // The id of the extension
+    protected _name: string;
 
-    constructor(name: string, url: string) {
+    //The HTML displayed name
+    protected _nameHTML: string;
+
+    constructor(map: Map, name: string, url: string) {
         this._url = url;
-        this._name = name;
+        this._nameHTML = name;
+
+        // Remove space in the name
+        this._name = name.replace(/\s/g, '');
         this._layer = null;
+        this._panels = [];
+        this._map = map;
     }
 
     /**
@@ -31,15 +44,52 @@ export abstract class Extension {
      * @return The endpoind's url
      */
     get url(): string {
-        return this.url;
+        return this._url;
+    }
+
+    /**
+     * Set the extension's layer
+     * @param layer - The layer to set
+     */
+    set layer(layer: SimpleLayer) {
+        this._layer = layer;
     }
 
     /**
      * Get the extension's attributes
-     * @return the extension's attributes
+     * @return The extension's attributes
      */
-    get attributes(): any[] {
+    get attributes(): any {
         return this._layer.getAttributes();
+    }
+
+    /**
+     * Set the extension layer's attributes
+     * @param attrs - The attributes to set
+     */
+    set attributes(attrs: any) {
+        if(!this._layer) {
+            throw new Error("The extension's layer is null");
+        }
+
+        if (!(attrs instanceof Object)) {
+            throw new Error("The attributes must be a object");
+        }
+
+        this._layer._attributeArray = [attrs]; 
+    }
+
+    /**
+     * Set the extension layer's attributes by feature properties
+     * @param features - The features to parse 
+     */
+    setAttributesByFeatures(features: Feature<any>[]): void {
+        let objs: any[] = [];
+        features.forEach( (feature: Feature<any>) => {
+            objs.push(feature.properties);
+        });
+
+        this._layer._attributeArray = objs; 
     }
 
     /**
@@ -51,31 +101,8 @@ export abstract class Extension {
     }
 
     /**
-     * Set the extension's layer
-     */
-    set layer(layer: SimpleLayer) {
-        this._layer = layer;
-    }
-
-    /**
-     * Set the layer attributes and returns geometries after parsing a JSON file
-     * @param xy - The position XY on map
-     * @return geometries The extension's geometries
-     */
-    public async fetch(point?: XY): Promise<BaseGeometry> {
-        try {
-            const json: any = await this.getJSON(point);
-            this.attributes = [json.properties];
-            const geometries: BaseGeometry = this.parse(json);
-            return geometries;
-        } catch (err) {
-            throw new Error(err.message);
-        }
-    }
-
-    /**
      * Set the extension layer's geometries 
-     * @param geometries - The geometries to add
+     * @param geometries - The geometries to change to
      */
     set geometries(geometries: BaseGeometry[]) {
 
@@ -88,36 +115,50 @@ export abstract class Extension {
     }
 
     /**
-     * Set the extension layer's attributes
-     * @param attrs - The attributes to add
+     * Add geometries to the layer
+     * @param geometries - The geometries to add
      */
-    set attributes(attrs: any[]) {
-        if(!this._layer) {
-            throw new Error("The extension's layer is null");
-        }
+    public addGeometries(geometries: BaseGeometry[]) {
+        this._layer.addGeometry(geometries);
+    }
 
-        this._layer._attributeArray = attrs; 
+    /**
+     * Add a panel to the extension
+     * @param panel - The panel to add
+     */
+    public addPanel(name: string): Panel {
+        const panel: Panel = this._map.createPanel(name);
+        this._panels.push(panel)
+        return panel;
+    }
+
+    /**
+     * Find a panel by it id
+     * @param id - The panel's name
+     */
+    public getPanel(id: string) {
+        return this._panels.find( (panel:Panel) => {
+            return panel.id == id;
+        });
+    }
+
+    /**
+     *  Get the HTML element of the extension
+     */
+    get HTMLElement(): string {
+        return `<button id="${this._name}">${this._nameHTML}</button>`;
     }
 
     /**
      * Get the display style of the geometries
-     * @return The render stryle
+     * @return The render style
      */
     public abstract renderStyleGeometries(): RenderStyle;
 
     /**
-     * Return the JSON response of the endpoind
-     * @param point - The selected point
-     * @return The JSON data
+     * If the extension continues to be active after clicking on map
      */
-    public abstract async getJSON(point?: XY): Promise<Object>;
-
-    /**
-     * Parse the json to create geometries
-     * @param json - The json data
-     * @return The geometries created 
-     */
-    public abstract parse(json: any): BaseGeometry;
+    public abstract persist(): boolean;
 
     /**
      * Call needed action from click event
