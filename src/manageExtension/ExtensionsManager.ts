@@ -58,7 +58,7 @@ export class ExtensionsManager {
      * @param extensions - The extensions to add
      */
     public addExtensions(extensions: Extension[]): void {
-        extensions.forEach( async (extension: Extension) => {
+        extensions.forEach( async (extension: Extension, index: number) => {
             this._extensions.push(extension);
         
             this.addHTMLButton(extension);
@@ -72,6 +72,8 @@ export class ExtensionsManager {
                 await this.manageClickEventBtn(extension);
             });
         }); 
+
+        this.manageClickEventClearButton();
     }
 
     /**
@@ -82,7 +84,18 @@ export class ExtensionsManager {
         $(`ul.${PANEL_EXTENSION}`).first().append(`
             <li>
                 ${extension.HTMLElement}
-            </li>
+                <div class="clearExtension">
+                    <button ext="${extension.name}" type="button" class="md-icon-button primary md-ink-ripple">
+                        <md-icon md-svg-src="action:search" class="ng-scope" role="img" aria-hidden="true">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="90%" height="90%" version="1.1">
+                                <g>
+                                    <path d="m478.1875 237.945312c22.070312-22.070312 22.070312-57.980468 0-80.050781l-140.867188-140.867187c-10.660156-10.660156-24.871093-16.527344-40.023437-16.527344s-29.367187 5.867188-40.023437 16.527344l-141.859376 141.855468 220.917969 220.917969zm0 0"/>
+                                    <path d="m497 399.265625h-183.625l-219.171875-219.167969-77.652344 77.652344c-22.066406 22.066406-22.066406 57.976562 0 80.046875l87.074219 87.074219c2.8125 2.816406 6.628906 4.394531 10.605469 4.394531h382.769531c8.28125 0 15-6.714844 15-15s-6.71875-15-15-15zm0 0"/>
+                                </g>
+                            </svg>
+                        </md-icon>
+                    </button>
+                </div>
         `);
     }
 
@@ -147,6 +160,19 @@ export class ExtensionsManager {
      */
     public addHTMLComponent(component: string): void {
         $(`ul.${PANEL_EXTENSION}`).first().append(`<li>${component}</li>`);
+    }
+
+    private manageClickEventClearButton(): void {
+        $(".clearExtension").find("button").click( (event: JQuery.Event) => {
+            const id = $(event.currentTarget).attr("ext");
+            const extension = this._extensions.find( (extension: Extension) => {
+                return id == extension.name;
+            });   
+            
+            if(extension) {
+                extension.removeGeometries();
+            }
+        });
     }
 
 }
