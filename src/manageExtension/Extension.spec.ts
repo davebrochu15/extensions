@@ -7,13 +7,6 @@ import { SimpleLayer } from "api/layers";
 
 describe("Extension class tests", () => {
 
-    /**
-     * IMPORTANT - For test purposes, you must remove the "RZ.GEO" in the corresponding files
-     * ex: RZ.GEO.Polygon -> Polygon
-     * This is because the variable RZ is a window variable from the FGPV-VPGF
-     */
-
-    const URL = "http://dev.geogratis.gc.ca:8012/chyf/";
     let _extension: Extension;
     let _layer: SimpleLayer;
 
@@ -21,7 +14,6 @@ describe("Extension class tests", () => {
 
         // @ts-ignore - Mock layer
         _layer = {
-            _attributeArray: [],
             _geometryArray: [],
             addGeometry: function(geo: BaseGeometry) {
                 this._geometryArray.push(geo);
@@ -29,47 +21,14 @@ describe("Extension class tests", () => {
             get geometry() {
                 return this._geometryArray;
             },
-            getAttributes: function() {
-                return this._attributeArray;
-            },
             removeGeometry: function() {
                 this._geometryArray = [];
             }
         }
 
-        _extension = new CHyFExtension("extension",`${URL}/drainageArea/upstreamOf.json`);
+        _extension = new CHyFExtension(null,"extension",`${URL}/drainageArea/upstreamOf.json`);
         _extension.layer = _layer;
         
-    });
-    
-
-    describe("fetch", async () => {
-
-        it("should return a polygon", async () => {  
-            const point: XY = new XY(-73.2480812072754,45.82245932513635);
-            const geometries: BaseGeometry = await _extension.fetch(point);
-            expect(geometries.type).to.equal("Polygon");
-        });
-
-        it("should have attributes", async () => {
-            const point: XY = new XY(-73.2480812072754,45.82245932513635);
-            await _extension.fetch(point);
-            expect(_extension.attributes).to.not.be.null;
-        });
-
-        it("should throw a error if the layer is null or undefined", () => {
-            const extension = new CHyFExtension("extension",`${URL}/drainageArea/upstreamOf.json`);
-            const point: XY = new XY(-73.2480812072754,45.82245932513635);
-            expect( async () => await extension.fetch(point) ).to.throw;
-        });
-
-        it("should throw a error if the address is wrong", async () => {
-            const extension = new CHyFExtension("extension",`${URL}/drainageArea/upstreamOf.json`);
-            extension.layer = _layer;
-            const point: XY = new XY(-73.2480812072754,45.82245932513635);
-            expect( async () => await extension.fetch(point) ).to.throw;
-        });
-
     });
 
     describe("setGeometries", () => {

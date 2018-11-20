@@ -5,8 +5,8 @@
     "scripts": {
         "dev": "webpack --mode development",
         "serve": "webpack-serve",
-        "test_all": "mocha -r ts-node/register -r tsconfig-paths/register \"./src/**/*spec.{ts,tsx}\"",
-        "test": "mocha -r ts-node/register -r tsconfig-paths/register -r jsdom-global/register"
+        "test_all": "mocha --timeout 15000 -r ts-node/register -r tsconfig-paths/register \"./src/**/*spec.{ts,tsx}\"",
+        "test": "mocha --timeout 15000 -r ts-node/register -r tsconfig-paths/register -r jsdom-global/register"
     },
     "repository": {
         "type": "git",
