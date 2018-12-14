@@ -62,3 +62,7 @@
     right: 40px;
     top: 8px;
  }
+
+ .panel-body {
+    overflow: auto;
+ }

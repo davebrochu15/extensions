@@ -206,8 +206,7 @@ export class GeoconnexExtension extends Extension {
 
         linkedDataPanel.panelContents.css({
             left: "410px",
-            width: "650px",
-            overflow: "auto"
+            width: "650px"
         });
 
         linkedDataPanel.panelBody.css("height", "500px");
